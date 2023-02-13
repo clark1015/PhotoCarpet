@@ -1,0 +1,11 @@
+
+version: '3'
+services:
+  mysql:
+    image: mysql:8-oracle
+    container_name: db_container5 #바꿔도됨
+    ports:
+      - "3309:3306" #앞부분 바꾸기
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: photocarpet #바꾸기

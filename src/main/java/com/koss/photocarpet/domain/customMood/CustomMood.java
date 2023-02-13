@@ -26,6 +26,7 @@ public class CustomMood extends BaseTimeEntity {
     private String customMood;
 
 
-    @OneToMany(mappedBy = "customMood")
+
+    @OneToMany(mappedBy = "customMood", orphanRemoval = true)
     List<MoodGroup> moodGroups= new ArrayList<MoodGroup>();}
 

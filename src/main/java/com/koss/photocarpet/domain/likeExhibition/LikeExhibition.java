@@ -18,7 +18,7 @@ import javax.persistence.*;
 public class LikeExhibition extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long likeId;
+    private Long likeExhibitionId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,7 +27,4 @@ public class LikeExhibition extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "exhibition_id")
     private Exhibition exhibition;
-    public static LikeExhibition newInstnace(User user, Exhibition exhibition){
-        return LikeExhibition.builder().user(user).exhibition(exhibition).build();
-    }
 }

@@ -1,5 +1,6 @@
 package com.koss.photocarpet.service;
 
+
 import com.koss.photocarpet.controller.dto.request.ExhibitionRequest;
 import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
@@ -81,4 +82,5 @@ public class ExhibitionService {
         return recentExhibitions.stream().map(ExhibitionResponse::new).collect(Collectors.toList());
 
     }
+
 }

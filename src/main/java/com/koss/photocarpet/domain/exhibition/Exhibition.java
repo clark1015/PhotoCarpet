@@ -29,7 +29,8 @@ public class Exhibition extends BaseTimeEntity {
     private String content;
     private Date exhibitDate;
     private boolean visible;
-    private int likeCount;
+
+    private Long likeCount;
     private String thumbnailUrl;
 
     @ManyToOne
@@ -56,10 +57,5 @@ public class Exhibition extends BaseTimeEntity {
     }
 
 
-    public void unLike() {
-        this.likeCount -=1;
-    }
-    public void like(){
-        this.likeCount +=1;
-    }
+
 }

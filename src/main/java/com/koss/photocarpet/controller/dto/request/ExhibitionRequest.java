@@ -1,5 +1,6 @@
 package com.koss.photocarpet.controller.dto.request;
 
+
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import com.koss.photocarpet.domain.user.User;
 import lombok.*;
@@ -32,4 +33,3 @@ public class ExhibitionRequest {
                 .likeCount(0)
                 .user(user).build();
     }
-}

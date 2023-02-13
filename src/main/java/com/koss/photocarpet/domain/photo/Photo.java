@@ -40,7 +40,6 @@ public class Photo extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "photo", orphanRemoval = true)
     List<LikePhoto> likephotos = new ArrayList<LikePhoto>();
-
     public void updateAll(String title, String content, String photoUrl, Boolean sell, Long price) {
         this.title = title;
         this.content = content;
@@ -48,4 +47,5 @@ public class Photo extends BaseTimeEntity {
         this.sell = sell;
         this.price = price;
     }
+
 }

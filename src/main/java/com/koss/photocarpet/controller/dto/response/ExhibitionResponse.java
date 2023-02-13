@@ -1,5 +1,6 @@
 package com.koss.photocarpet.controller.dto.response;
 
+
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import lombok.*;
 
@@ -41,4 +42,3 @@ public class ExhibitionResponse {
                 .exhibitionDate(exhibitionDate).build();
     }
 
-}
