@@ -43,9 +43,6 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Exhibition> exhibitions = new ArrayList<Exhibition>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    List<CustomMood> customMoods = new ArrayList<CustomMood>();
-
     @OneToMany(mappedBy = "buyer", orphanRemoval = true)
     List<PaymentRecord> paymentRecords = new ArrayList<PaymentRecord>();
 
