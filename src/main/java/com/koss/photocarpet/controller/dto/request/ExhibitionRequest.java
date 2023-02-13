@@ -30,6 +30,7 @@ public class ExhibitionRequest {
                 .title(exhibitionRequest.getTitle())
                 .content(exhibitionRequest.getContent())
                 .visible(true)
-                .likeCount(0)
+                .likeCount(0L)
                 .user(user).build();
     }
+}

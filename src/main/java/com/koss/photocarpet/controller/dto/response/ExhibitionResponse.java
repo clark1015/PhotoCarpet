@@ -17,7 +17,7 @@ public class ExhibitionResponse {
     private String title;
     private String content;
     private Long userId;
-    private int likeCount;
+    private Long likeCount;
     private Date exhibitionDate;
     private LocalDateTime createDate;
 
@@ -30,9 +30,7 @@ public class ExhibitionResponse {
     }
 
 
-
-
-    public static ExhibitionResponse of(Long exhibitId, String title, String content, Long userId, int likeCount, Date exhibitionDate) {
+    public static ExhibitionResponse of(Long exhibitId, String title, String content, Long userId, Long likeCount, Date exhibitionDate) {
         return ExhibitionResponse.builder()
                 .exhibitId(exhibitId)
                 .title(title)
@@ -41,4 +39,5 @@ public class ExhibitionResponse {
                 .likeCount(likeCount)
                 .exhibitionDate(exhibitionDate).build();
     }
+}
 

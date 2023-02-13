@@ -20,7 +20,7 @@ public class LikeExhibitionService {
     private LikeExhibitionTestRepository likeExhibitionTestRepository;
     public void push_like(final Long userId, final Long exhibitionId, final LikeExhibitionRequest likeExhibitionRequest) {
         LikeExhibition likeExhibition = likeExhibitionRequest.toEntity(likeExhibitionRequest);
-        likeExhibition.setUser(userTestRepository.findByUserId(userId));
+        likeExhibition.setUser(userTestRepository.findByUserId(userId).get());
         likeExhibition.setExhibition(exhibitionTestRepository.findByExhibitionId(exhibitionId));
 
         likeExhibitionTestRepository.save(likeExhibition);
