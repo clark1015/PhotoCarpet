@@ -29,7 +29,7 @@ public class User extends BaseTimeEntity {
 
     @Column
     private String nickname;
-    private Long total_point;
+    private Long totalPoint;
     private String email;
     private String profileUrl;
 
@@ -42,9 +42,6 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<Exhibition> exhibitions = new ArrayList<Exhibition>();
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    List<CustomMood> customMoods = new ArrayList<CustomMood>();
 
     @OneToMany(mappedBy = "buyer", orphanRemoval = true)
     List<PaymentRecord> paymentRecords = new ArrayList<PaymentRecord>();
