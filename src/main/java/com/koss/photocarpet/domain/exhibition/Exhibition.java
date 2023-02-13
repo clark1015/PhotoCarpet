@@ -29,6 +29,7 @@ public class Exhibition extends BaseTimeEntity {
     private String content;
     private Date exhibitDate;
     private boolean visible;
+
     private Long likeCount;
     private String thumbnailUrl;
 
@@ -45,8 +46,15 @@ public class Exhibition extends BaseTimeEntity {
     @OneToMany(mappedBy = "exhibition", orphanRemoval = true)
     List<MoodGroup> moodGroups = new ArrayList<MoodGroup>();
 
+    public void updateTitleContentDate(String updateTitle, String updateContent, Date updateDate){
+        this.title = updateTitle;
+        this.content = updateContent;
+        this.exhibitDate = updateDate;
+    }
 
-
+    public void updateThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
 
 
 

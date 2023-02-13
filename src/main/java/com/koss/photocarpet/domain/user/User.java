@@ -29,7 +29,7 @@ public class User extends BaseTimeEntity {
 
     @Column
     private String nickname;
-    private Long total_point;
+    private Long totalPoint;
     private String email;
     private String profileUrl;
 
