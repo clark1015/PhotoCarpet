@@ -29,7 +29,7 @@ public class WebSecurityConfig {
             .httpBasic().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers("/", "/user/**", "/login").permitAll()
+                .antMatchers("/", "/user/**", "/login","/search/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterAfter(
                 jwtAuthenticationFilter,

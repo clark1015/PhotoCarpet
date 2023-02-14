@@ -28,7 +28,7 @@ public class SearchController {
         try {
             LinkedHashSet<?> result = searchService.search(keyword);
             SearchResultResponse searchResultResponse = SearchResultResponse.builder().result(result).build();
-            return ResponseEntity.ok(searchResultResponse);
+            return ResponseEntity.ok().body(searchResultResponse);
         }
         catch (Exception e) {
             SearchResultResponse searchResultResponse = SearchResultResponse.builder().error(e.getMessage()).build();
