@@ -42,6 +42,10 @@ public class KakaoUserService {
 
     public SocialUserResponse kakaoSignup(UserRequestDTO kakaoUser){
         User user = User.builder().email(kakaoUser.getEmail()).nickname(kakaoUser.getNickname()).profileUrl(kakaoUser.getProfileurl()).profile_message(kakaoUser.getProfileMessage()).build();
+        if (userRepository.findByNickname(kakaoUser.getNickname()).get() != null ) {
+            log.info("Nickname already exists");
+            throw new RuntimeException("Nickname already exists");
+        }
         userRepository.save(user);
         SocialUserResponse response = SocialUserResponse.builder().email(kakaoUser.getEmail()).nickname(kakaoUser.getNickname()).profileUrl(kakaoUser.getProfileurl()).profileMessage(kakaoUser.getProfileMessage()).build();
         return AppLogin(response);
@@ -122,7 +126,7 @@ public class KakaoUserService {
     public SocialUserResponse updateUser(UserRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId()).get();
         Optional<User> existingUser = userRepository.findByNickname(dto.getNickname());
-        if (existingUser.isPresent() && !existingUser.get().getUserId().equals(dto.getUserId())) {
+        if (existingUser.isPresent() && !existingUser.get().getNickname().equals(dto.getNickname())) {
             log.info("Nickname already exists");
             throw new RuntimeException("Nickname already exists");
         }
