@@ -32,7 +32,7 @@ public class User extends BaseTimeEntity {
     private Long totalPoint;
     private String email;
     private String profileUrl;
-
+    private String profile_message;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     List<LikePhoto> likePhotos = new ArrayList<LikePhoto>();

@@ -12,7 +12,15 @@ public class SocialUserResponse {
     private String nickname;
     private String email;
 
-    private String token;
+    private String profileUrl;
+
+    private String jwtToken;
+
+    private String accessToken;
+
+    private String profileMessage;
+
+    private boolean validate_check;
 
     public SocialUserResponse(Long id, String nickname, String email){
         this.userId = id;
