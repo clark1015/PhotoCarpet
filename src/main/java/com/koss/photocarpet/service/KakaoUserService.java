@@ -3,20 +3,21 @@ package com.koss.photocarpet.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.koss.photocarpet.Security.JwtAuthenticationToken;
+import com.koss.photocarpet.Security.TokenProvider;
 import com.koss.photocarpet.controller.dto.request.UserUpdateDto;
 import com.koss.photocarpet.controller.dto.response.SocialUserResponse;
 import com.koss.photocarpet.domain.user.CustomUserDetails;
 import com.koss.photocarpet.domain.user.User;
 import com.koss.photocarpet.domain.user.UserRepository;
-import com.koss.photocarpet.Security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
