@@ -3,12 +3,10 @@ package com.koss.photocarpet.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.koss.photocarpet.controller.dto.request.UserRequestDTO;
 import com.koss.photocarpet.controller.dto.response.SocialUserResponse;
-import com.koss.photocarpet.domain.user.CustomUserDetails;
 import com.koss.photocarpet.service.KakaoUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

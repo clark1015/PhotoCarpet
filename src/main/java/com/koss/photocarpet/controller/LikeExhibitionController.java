@@ -23,4 +23,10 @@ public class LikeExhibitionController {
         return ResponseEntity.ok("좋아요 누르기 완료");
     }
 
+    @DeleteMapping("/dislike")
+    public ResponseEntity<?> dislike(@AuthenticationPrincipal Long userId, @RequestParam Long exhibitionId) {
+        likeExhibitionService.delete_like(userId, exhibitionId);
+        return ResponseEntity.ok("좋아요 삭제 완료");
+    }
+
 }

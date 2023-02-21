@@ -1,7 +1,8 @@
 package com.koss.photocarpet.domain.exhibition;
 import com.koss.photocarpet.domain.BaseTimeEntity;
+import com.koss.photocarpet.domain.customMood.CustomMood;
 import com.koss.photocarpet.domain.likeExhibition.LikeExhibition;
-import com.koss.photocarpet.domain.moodGroup.MoodGroup;
+import com.koss.photocarpet.domain.moodRelation.MoodRelation;
 import com.koss.photocarpet.domain.photo.Photo;
 import com.koss.photocarpet.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class Exhibition extends BaseTimeEntity {
     List<LikeExhibition> likeExhibitions = new ArrayList<LikeExhibition>();
 
     @OneToMany(mappedBy = "exhibition", orphanRemoval = true)
-    List<MoodGroup> moodGroups = new ArrayList<MoodGroup>();
+    List<MoodRelation> moodRelations = new ArrayList<MoodRelation>();
 
     public void updateTitleContentDate(String updateTitle, String updateContent, Date updateDate){
         this.title = updateTitle;
@@ -55,6 +56,8 @@ public class Exhibition extends BaseTimeEntity {
     public void updateThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
+
+
 
 
 

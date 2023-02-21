@@ -1,7 +1,6 @@
 package com.koss.photocarpet.domain.customMood;
 import com.koss.photocarpet.domain.BaseTimeEntity;
-import com.koss.photocarpet.domain.moodGroup.MoodGroup;
-import com.koss.photocarpet.domain.user.User;
+import com.koss.photocarpet.domain.moodRelation.MoodRelation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +27,5 @@ public class CustomMood extends BaseTimeEntity {
 
 
     @OneToMany(mappedBy = "customMood", orphanRemoval = true)
-    List<MoodGroup> moodGroups= new ArrayList<MoodGroup>();}
+    List<MoodRelation> moodRelations = new ArrayList<MoodRelation>();}
 

@@ -4,8 +4,12 @@ package com.koss.photocarpet.service;
 import com.koss.photocarpet.controller.ImageHandler;
 import com.koss.photocarpet.controller.dto.request.ExhibitionRequest;
 import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
+import com.koss.photocarpet.domain.customMood.CustomMood;
+import com.koss.photocarpet.domain.customMood.CustomMoodTestRepository;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import com.koss.photocarpet.domain.exhibition.ExhibitionRepository;
+import com.koss.photocarpet.controller.ImageHandler;
+import com.koss.photocarpet.domain.moodRelation.MoodRelation;
 import com.koss.photocarpet.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,10 +28,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
+    private final CustomMoodTestRepository customMoodTestRepository;
+    private final UserTestRepository userTestRepository;
     private final ImageHandler imageHandler;
     private final UserService userService;
     private final S3Upload s3Upload;
     //임의의 user 미리 만들어둠.  코드 합칠때 수정예정
+    User user = User.builder().userId(1L).nickname("sorr").totalPoint(0L).email("solhee@com").build();
     public void create(ExhibitionRequest exhibitionRequest, MultipartFile file) throws Exception {
         User getUser = userService.getUser(exhibitionRequest.getUserId());
         invalidArguments(exhibitionRequest);
@@ -32,7 +42,26 @@ public class ExhibitionService {
 //        String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
         String exhibitionImageUrl = s3Upload.upload(file);
         exhibition.updateThumbnailUrl(exhibitionImageUrl);
+        exhibition = setCustomMoods(exhibitionRequest.getCustomMoods(),exhibition);
         exhibitionRepository.save(exhibition);
+    }
+
+    public Exhibition setCustomMoods(List<String> customMoodNames, Exhibition exhibition) {
+        List<MoodRelation> moodRelations = new ArrayList<>();
+        for(String customMoodName: customMoodNames) {
+            CustomMood customMood = customMoodTestRepository.findByCustomMood(customMoodName);
+
+            if(customMood == null) {
+                customMood = CustomMood.builder().customMood(customMoodName).build();
+            }
+            MoodRelation moodRelation = MoodRelation.builder()
+                    .customMood(customMood)
+                    .exhibition(exhibition)
+                    .build();
+            moodRelations.add(moodRelation);
+        }
+        exhibition.setMoodRelations(moodRelations);
+        return exhibition;
     }
     private void invalidArguments(ExhibitionRequest exhibitionRequest){
         if (exhibitionRequest.getTitle().equals("") || exhibitionRequest.getContent().equals("") || exhibitionRequest.getExhibitionDate().equals("")) {
