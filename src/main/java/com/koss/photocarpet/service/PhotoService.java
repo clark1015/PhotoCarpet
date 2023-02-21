@@ -63,4 +63,10 @@ public class PhotoService {
         List<Photo> allArts = photoRepository.findByExhibition(getExhibition);
         return allArts.stream().map(PhotoResponse::new).collect(Collectors.toList());
     }
+
+    public PhotoResponse getArt(Long photoId) {
+        Photo getPhoto = getPhoto(photoId);
+        return PhotoResponse.of(getPhoto.getExhibition().getExhibitionId(), getPhoto.getPhotoId(),
+                getPhoto.getTitle(), getPhoto.getContent(), getPhoto.getUrl(), getPhoto.getPrice(), getPhoto.isSell());
+    }
 }

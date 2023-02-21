@@ -41,4 +41,9 @@ public class PhotoController {
         return ResponseEntity.ok(allArts);
 
     }
+    @GetMapping("/getArt/{photoId}")
+    public ResponseEntity<?> getPhoto(@PathVariable Long photoId){
+        PhotoResponse getPhotoResponse = photoService.getArt(photoId);
+        return ResponseEntity.ok(getPhotoResponse);
+    }
 }
