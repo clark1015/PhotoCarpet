@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final CustomMoodTestRepository customMoodTestRepository;
-    private final UserTestRepository userTestRepository;
     private final ImageHandler imageHandler;
     private final UserService userService;
     private final S3Upload s3Upload;
