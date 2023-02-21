@@ -91,8 +91,8 @@ public class UserController
 
 
     @GetMapping("/test")
-    public String testController(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return "Test site is working. User ID: " + customUserDetails.getUserId();
+    public String testController() {
+        return "Test site is working.";
     }
 
     @GetMapping()
