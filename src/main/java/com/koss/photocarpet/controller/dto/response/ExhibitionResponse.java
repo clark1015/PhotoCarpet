@@ -20,23 +20,28 @@ public class ExhibitionResponse {
     private Long likeCount;
     private Date exhibitionDate;
     private LocalDateTime createDate;
+    private String thumbUrl;
 
     public ExhibitionResponse(Exhibition exhibition) {
         this.exhibitId = exhibition.getExhibitionId();
+        this.content = exhibition.getContent();
         this.title = exhibition.getTitle();
         this.userId = exhibition.getUser().getUserId();
         this.likeCount = exhibition.getLikeCount();
         this.exhibitionDate = exhibition.getExhibitDate();
+        this.thumbUrl =exhibition.getThumbnailUrl();
+        this.createDate = exhibition.getCreateDate();
     }
 
 
-    public static ExhibitionResponse of(Long exhibitId, String title, String content, Long userId, Long likeCount, Date exhibitionDate) {
+    public static ExhibitionResponse of(Long exhibitId, String title, String content, Long userId, Long likeCount, Date exhibitionDate,String thumbUrl) {
         return ExhibitionResponse.builder()
                 .exhibitId(exhibitId)
                 .title(title)
                 .content(content)
                 .userId(userId)
                 .likeCount(likeCount)
+                .thumbUrl(thumbUrl)
                 .exhibitionDate(exhibitionDate).build();
     }
 }

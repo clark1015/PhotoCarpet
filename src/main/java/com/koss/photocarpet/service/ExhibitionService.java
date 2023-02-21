@@ -7,7 +7,6 @@ import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import com.koss.photocarpet.domain.exhibition.ExhibitionRepository;
 import com.koss.photocarpet.domain.user.User;
-import com.koss.photocarpet.domain.user.UserTestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
-    private final UserTestRepository userTestRepository;
     private final ImageHandler imageHandler;
     private final UserService userService;
     private final S3Upload s3Upload;
@@ -52,7 +50,7 @@ public class ExhibitionService {
         getExhibition.updateTitleContentDate(exhibitionRequest.getTitle(), exhibitionRequest.getContent(),exhibitionRequest.getExhibitionDate());
         getExhibition.updateThumbnailUrl(exhibitionImageUrl);
         Exhibition savedExhibition = exhibitionRepository.save(getExhibition);
-        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate());
+        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate(), savedExhibition.getThumbnailUrl());
     }
     public Exhibition getExhibition(Long exhibitionId){
         Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibitionId)

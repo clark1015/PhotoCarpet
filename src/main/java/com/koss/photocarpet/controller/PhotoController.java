@@ -1,14 +1,17 @@
 package com.koss.photocarpet.controller;
 
 import com.koss.photocarpet.controller.dto.request.PhotoRequest;
+import com.koss.photocarpet.controller.dto.response.PhotoResponse;
 import com.koss.photocarpet.service.PhotoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/photo")
@@ -31,5 +34,11 @@ public class PhotoController {
     public ResponseEntity<?> delete(@PathVariable Long photoId) throws Exception{
         photoService.delete(photoId);
         return ResponseEntity.ok("delete");
+    }
+    @GetMapping("/{exhibitionId}")
+    public ResponseEntity<?> getArts(@PathVariable Long exhibitionId) throws Exception{
+        List<PhotoResponse> allArts =  photoService.getArts(exhibitionId);
+        return ResponseEntity.ok(allArts);
+
     }
 }
