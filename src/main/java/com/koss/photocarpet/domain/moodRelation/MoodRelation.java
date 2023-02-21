@@ -1,4 +1,4 @@
-package com.koss.photocarpet.domain.moodGroup;
+package com.koss.photocarpet.domain.moodRelation;
 
 import com.koss.photocarpet.domain.BaseTimeEntity;
 import com.koss.photocarpet.domain.customMood.CustomMood;
@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoodGroup extends BaseTimeEntity {
+public class MoodRelation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long moodGroupId;

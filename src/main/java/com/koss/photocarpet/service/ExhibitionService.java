@@ -3,9 +3,12 @@ package com.koss.photocarpet.service;
 
 import com.koss.photocarpet.controller.dto.request.ExhibitionRequest;
 import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
+import com.koss.photocarpet.domain.customMood.CustomMood;
+import com.koss.photocarpet.domain.customMood.CustomMoodTestRepository;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import com.koss.photocarpet.domain.exhibition.ExhibitionRepository;
 import com.koss.photocarpet.controller.ImageHandler;
+import com.koss.photocarpet.domain.moodRelation.MoodRelation;
 import com.koss.photocarpet.domain.user.User;
 import com.koss.photocarpet.domain.user.UserTestRepository;
 import com.sun.xml.bind.v2.schemagen.xmlschema.NestedParticle;
@@ -15,7 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,17 +29,38 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
+    private final CustomMoodTestRepository customMoodTestRepository;
     private final UserTestRepository userTestRepository;
     private final ImageHandler imageHandler;
     //임의의 user 미리 만들어둠.  코드 합칠때 수정예정
     User user = User.builder().userId(1L).nickname("sorr").totalPoint(0L).email("solhee@com").build();
     public void create(ExhibitionRequest exhibitionRequest, MultipartFile file) throws Exception {
+
 //        userTestRepository.save(user);
         invalidArguments(exhibitionRequest);
         Exhibition exhibition = exhibitionRequest.toExhibitionEntity(exhibitionRequest,user);
         String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
         exhibition.updateThumbnailUrl(exhibitionImageUrl);
+        exhibition = setCustomMoods(exhibitionRequest.getCustomMoods(),exhibition);
         exhibitionRepository.save(exhibition);
+    }
+
+    public Exhibition setCustomMoods(List<String> customMoodNames, Exhibition exhibition) {
+        List<MoodRelation> moodRelations = new ArrayList<>();
+        for(String customMoodName: customMoodNames) {
+            CustomMood customMood = customMoodTestRepository.findByCustomMood(customMoodName);
+
+            if(customMood == null) {
+                customMood = CustomMood.builder().customMood(customMoodName).build();
+            }
+            MoodRelation moodRelation = MoodRelation.builder()
+                    .customMood(customMood)
+                    .exhibition(exhibition)
+                    .build();
+            moodRelations.add(moodRelation);
+        }
+        exhibition.setMoodRelations(moodRelations);
+        return exhibition;
     }
     private void invalidArguments(ExhibitionRequest exhibitionRequest){
         if (exhibitionRequest.getTitle().equals("") || exhibitionRequest.getContent().equals("") || exhibitionRequest.getExhibitionDate().equals("")) {
@@ -47,6 +74,7 @@ public class ExhibitionService {
         invalidArguments(exhibitionRequest);
         imageHandler.deleteFile(getExhibition.getThumbnailUrl());
         getExhibition.updateTitleContentDate(exhibitionRequest.getTitle(), exhibitionRequest.getContent(),exhibitionRequest.getExhibitionDate());
+        getExhibition = setCustomMoods(exhibitionRequest.getCustomMoods(), getExhibition);
         Exhibition savedExhibition = exhibitionRepository.save(getExhibition);
         return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate());
     }

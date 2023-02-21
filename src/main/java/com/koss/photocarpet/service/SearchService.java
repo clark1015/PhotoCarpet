@@ -1,10 +1,10 @@
 package com.koss.photocarpet.service;
 
+import com.koss.photocarpet.domain.customMood.CustomMood;
 import com.koss.photocarpet.domain.customMood.CustomMoodTestRepository;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
 import com.koss.photocarpet.domain.exhibition.ExhibitionRepository;
-import com.koss.photocarpet.domain.exhibition.ExhibitionTestRepository;
-import com.koss.photocarpet.domain.moodGroup.MoodGroupTestRepository;
+import com.koss.photocarpet.domain.moodRelation.MoodRelationTestRepository;
 import com.koss.photocarpet.domain.user.User;
 import com.koss.photocarpet.domain.user.UserTestRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class SearchService {
     @Autowired
     private ExhibitionRepository exhibitionRepository;
     @Autowired
-    private MoodGroupTestRepository moodGroupTestRepository;
+    private MoodRelationTestRepository moodRelationTestRepository;
     @Autowired
     private UserTestRepository userTestRepository;
 
@@ -54,18 +54,18 @@ public class SearchService {
         return searchResult;
     }
 
-    private void searchByCustomMood(String keyword) {
-        Optional<?> customMood = Optional.ofNullable(customMoodTestRepository.findByCustomMood(keyword));
-        if(customMood.isPresent()) {
-            List<Exhibition> exhibitions = moodGroupTestRepository.findByCustomMoodContaining(customMood);
+    private String searchByCustomMood(String keyword) {
+        CustomMood customMood = customMoodTestRepository.findByCustomMood(keyword);
+        if(customMood != null) {
+            List<Exhibition> exhibitions = moodRelationTestRepository.findByCustomMoodContaining(customMood);
             for(Exhibition exhibition: exhibitions) {
                 if (search_score_record.containsKey(exhibition))
                     search_score_record.put(exhibition,search_score_record.get(exhibition) + 2);
                 else{
                     search_score_record.put(exhibition,2);}
             }
-
         }
+        return "customMood ok";
     }
 
     private void searchByExhibitionName(String keyword) {

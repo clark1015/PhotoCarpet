@@ -26,6 +26,7 @@ public class SearchController {
     @GetMapping("/search/{keyword}")
     public ResponseEntity<?> searchResult(@PathVariable String keyword) {
         try {
+            System.out.println("키워드: " + keyword);
             LinkedHashSet<?> result = searchService.search(keyword);
             SearchResultResponse searchResultResponse = SearchResultResponse.builder().result(result).build();
             return ResponseEntity.ok().body(searchResultResponse);

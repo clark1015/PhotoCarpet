@@ -18,7 +18,7 @@ import java.util.List;
 public class ExhibitionController {
     private final ExhibitionService exhibitionService;
     @PostMapping(value = "/create",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> create (@Valid @RequestPart ExhibitionRequest exhibitionRequest,@RequestPart MultipartFile file) throws Exception{
+    public ResponseEntity<?> create ( @RequestPart ExhibitionRequest exhibitionRequest,@RequestPart MultipartFile file) throws Exception{
         exhibitionService.create(exhibitionRequest,file);
         return ResponseEntity.ok("ok");
     }
