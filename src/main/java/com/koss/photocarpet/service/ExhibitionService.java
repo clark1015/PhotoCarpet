@@ -46,6 +46,7 @@ public class ExhibitionService {
     }
 
     public Exhibition setCustomMoods(List<String> customMoodNames, Exhibition exhibition) {
+        if(customMoodNames == null) return exhibition;
         List<MoodRelation> moodRelations = new ArrayList<>();
         for(String customMoodName: customMoodNames) {
             CustomMood customMood = customMoodTestRepository.findByCustomMood(customMoodName);
