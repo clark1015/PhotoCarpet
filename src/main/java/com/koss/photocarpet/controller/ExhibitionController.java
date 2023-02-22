@@ -55,6 +55,13 @@ public class ExhibitionController {
         return ResponseEntity.ok("ok");
     }
 
+    @GetMapping("/{exhibitionId}")
+    public ResponseEntity<?> findById(@PathVariable Long exhibitionId) {
+        ExhibitionResponse exhibitionResponse = exhibitionService.findByID(exhibitionId);
+        return ResponseEntity.ok(exhibitionResponse);
+
+    }
+
 //    @PostMapping("/upload")
 //    public ResponseEntity<?> uploadFile(@RequestParam("images") MultipartFile multipartFile) throws IOException {
 //        s3Upload.upload(multipartFile);
