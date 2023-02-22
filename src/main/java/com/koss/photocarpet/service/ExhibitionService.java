@@ -46,6 +46,7 @@ public class ExhibitionService {
     }
 
     public Exhibition setCustomMoods(List<String> customMoodNames, Exhibition exhibition) {
+        if(customMoodNames == null) return exhibition;
         List<MoodRelation> moodRelations = new ArrayList<>();
         for(String customMoodName: customMoodNames) {
             CustomMood customMood = customMoodTestRepository.findByCustomMood(customMoodName);
@@ -81,8 +82,8 @@ public class ExhibitionService {
         return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate(), savedExhibition.getThumbnailUrl());
     }
     public Exhibition getExhibition(Long exhibitionId){
-        Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibitionId)
-                .orElseThrow(() -> new IllegalArgumentException("없는 전시회 아이디입니다"));
+        Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibitionId);
+        if (exhibition ==null) throw new RuntimeException("없는 전시회를 가져올 수 없습니다!");
         return exhibition;
     }
 

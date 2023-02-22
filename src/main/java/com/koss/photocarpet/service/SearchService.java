@@ -1,5 +1,6 @@
 package com.koss.photocarpet.service;
 
+import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
 import com.koss.photocarpet.domain.customMood.CustomMood;
 import com.koss.photocarpet.domain.customMood.CustomMoodTestRepository;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
@@ -26,9 +27,9 @@ public class SearchService {
     @Autowired
     private UserTestRepository userTestRepository;
 
-    Map<Exhibition, Integer> search_score_record;
-    public LinkedHashSet<Exhibition> search(String keyword) {
-        search_score_record = new HashMap<Exhibition, Integer>();
+    Map<Long, Integer> search_score_record;
+    public LinkedHashSet<ExhibitionResponse> search(String keyword) {
+        search_score_record = new HashMap<Long, Integer>();
         Pattern pattern = Pattern.compile("\\s+");
 
         String[] splitKeywordBySpace = pattern.split(keyword);
@@ -41,17 +42,29 @@ public class SearchService {
             searchByExhibitionContent(splitKeyword);
         }
 
-        LinkedHashSet<Exhibition> searchResult = new LinkedHashSet<>();
+        LinkedHashSet<Long> searchResult = new LinkedHashSet<>();
 
-        List<Exhibition> keySet = new ArrayList<>(search_score_record.keySet());
+        List<Long> keySet = new ArrayList<>(search_score_record.keySet());
         keySet.sort((o1,o2) -> search_score_record.get(o2).compareTo(search_score_record.get(o1)));
 
         System.out.println(search_score_record);
 
-        for (Exhibition exhibition: keySet) {
-            searchResult.add(exhibition);
+        return setResult(keySet);
+    }
+
+    private LinkedHashSet<ExhibitionResponse> setResult(List<Long> keySet) {
+        LinkedHashSet<ExhibitionResponse> result = new LinkedHashSet<>();
+        for (Long exhibition_id :  keySet) {
+            Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibition_id);
+            ExhibitionResponse exhibitionResponse = ExhibitionResponse.builder()
+                    .exhibitId(exhibition.getExhibitionId())
+                    .title(exhibition.getTitle())
+                    .content(exhibition.getContent())
+                    .exhibitionDate(exhibition.getExhibitDate())
+                    .build();
+            result.add(exhibitionResponse);
         }
-        return searchResult;
+        return result;
     }
 
     private String searchByCustomMood(String keyword) {
@@ -59,10 +72,11 @@ public class SearchService {
         if(customMood != null) {
             List<Exhibition> exhibitions = moodRelationTestRepository.findByCustomMoodContaining(customMood);
             for(Exhibition exhibition: exhibitions) {
-                if (search_score_record.containsKey(exhibition))
-                    search_score_record.put(exhibition,search_score_record.get(exhibition) + 2);
+                long exhibition_id = exhibition.getExhibitionId();
+                if (search_score_record.containsKey(exhibition_id))
+                    search_score_record.put(exhibition_id,search_score_record.get(exhibition_id) + 2);
                 else{
-                    search_score_record.put(exhibition,2);}
+                    search_score_record.put(exhibition_id,2);}
             }
         }
         return "customMood ok";
@@ -73,40 +87,43 @@ public class SearchService {
 
         if (exhibitions.isPresent()) {
             for (Exhibition exhibition: exhibitions.get()) {
-                if (search_score_record.containsKey(exhibition))
-                    search_score_record.put(exhibition,search_score_record.get(exhibition) + 5);
+                long exhibition_id = exhibition.getExhibitionId();
+                if (search_score_record.containsKey(exhibition_id))
+                    search_score_record.put(exhibition_id,search_score_record.get(exhibition_id) + 5);
                 else{
-                    search_score_record.put(exhibition,5);}
+                    search_score_record.put(exhibition_id,5);}
             }
         }
 
     }
 
     private void searchByExhibitionContent(String keyword) {
-        Optional<List<Exhibition>> exhibitions = Optional.ofNullable(exhibitionRepository.findByContentContaining(keyword));
+        List<Exhibition> exhibitions = exhibitionRepository.findByContentContaining(keyword);
 
-        if (exhibitions.isPresent()) {
-            for (Exhibition exhibition: exhibitions.get()) {
-                if (search_score_record.containsKey(exhibition))
-                    search_score_record.put(exhibition,search_score_record.get(exhibition) + 3);
+        if (exhibitions != null) {
+            for (Exhibition exhibition: exhibitions) {
+                long exhibition_id = exhibition.getExhibitionId();
+                if (search_score_record.containsKey(exhibition_id))
+                    search_score_record.put(exhibition_id,search_score_record.get(exhibition_id) + 3);
                 else{
-                    search_score_record.put(exhibition,3);}
+                    search_score_record.put(exhibition_id,3);}
             }
         }
 
     }
 
     private void searchByUsername(String keyword) {
-        Optional<List<User>> users = Optional.ofNullable(userTestRepository.findByNickname(keyword));
-        if(users.isPresent()) {
-            for(User user: users.get()) {
-                Optional<List<Exhibition>> exhibitions = Optional.ofNullable(exhibitionRepository.findByUser(user));
-                if (exhibitions.isPresent()) {
-                    for (Exhibition exhibition: exhibitions.get()) {
-                        if (search_score_record.containsKey(exhibition))
-                            search_score_record.put(exhibition,search_score_record.get(exhibition) + 4);
+        List<User> users = userTestRepository.findByNickname(keyword);
+        if(users != null) {
+            for(User user: users) {
+                List<Exhibition> exhibitions = exhibitionRepository.findByUser(user);
+                if (exhibitions != null) {
+                    for (Exhibition exhibition: exhibitions) {
+                        long exhibition_id = exhibition.getExhibitionId();
+                        if (search_score_record.containsKey(exhibition_id))
+                            search_score_record.put(exhibition_id,search_score_record.get(exhibition_id) + 4);
                         else{
-                            search_score_record.put(exhibition,4);}
+                            search_score_record.put(exhibition_id,4);}
                     }
                 }
 
