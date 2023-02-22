@@ -29,7 +29,7 @@ public class WebSecurityConfig {
             .httpBasic().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers("/","/**").permitAll() //search 개발용으로 허용 추가
+                .antMatchers("/", "/user/**", "/login","/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterAfter(
                 jwtAuthenticationFilter,

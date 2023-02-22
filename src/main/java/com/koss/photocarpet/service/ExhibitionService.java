@@ -1,6 +1,7 @@
 package com.koss.photocarpet.service;
 
 
+import com.koss.photocarpet.controller.ImageHandler;
 import com.koss.photocarpet.controller.dto.request.ExhibitionRequest;
 import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
 import com.koss.photocarpet.domain.customMood.CustomMood;
@@ -10,8 +11,6 @@ import com.koss.photocarpet.domain.exhibition.ExhibitionRepository;
 import com.koss.photocarpet.controller.ImageHandler;
 import com.koss.photocarpet.domain.moodRelation.MoodRelation;
 import com.koss.photocarpet.domain.user.User;
-import com.koss.photocarpet.domain.user.UserTestRepository;
-import com.sun.xml.bind.v2.schemagen.xmlschema.NestedParticle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -30,16 +29,17 @@ import java.util.stream.Collectors;
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final CustomMoodTestRepository customMoodTestRepository;
-    private final UserTestRepository userTestRepository;
     private final ImageHandler imageHandler;
+    private final UserService userService;
+    private final S3Upload s3Upload;
     //임의의 user 미리 만들어둠.  코드 합칠때 수정예정
     User user = User.builder().userId(1L).nickname("sorr").totalPoint(0L).email("solhee@com").build();
     public void create(ExhibitionRequest exhibitionRequest, MultipartFile file) throws Exception {
-
-//        userTestRepository.save(user);
+        User getUser = userService.getUser(exhibitionRequest.getUserId());
         invalidArguments(exhibitionRequest);
-        Exhibition exhibition = exhibitionRequest.toExhibitionEntity(exhibitionRequest,user);
-        String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
+        Exhibition exhibition = exhibitionRequest.toExhibitionEntity(exhibitionRequest,getUser);
+//        String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
+        String exhibitionImageUrl = s3Upload.upload(file);
         exhibition.updateThumbnailUrl(exhibitionImageUrl);
         exhibition = setCustomMoods(exhibitionRequest.getCustomMoods(),exhibition);
         exhibitionRepository.save(exhibition);
@@ -69,14 +69,16 @@ public class ExhibitionService {
         }
     }
 
-    public ExhibitionResponse update(ExhibitionRequest exhibitionRequest) throws Exception{
+    public ExhibitionResponse update(ExhibitionRequest exhibitionRequest, MultipartFile file) throws Exception{
         Exhibition getExhibition = getExhibition(exhibitionRequest.getExhibitionId());
         invalidArguments(exhibitionRequest);
-        imageHandler.deleteFile(getExhibition.getThumbnailUrl());
+//        imageHandler.deleteFile(getExhibition.getThumbnailUrl());
+//        s3Upload.fileDelete(getExhibition.getThumbnailUrl());
+        String exhibitionImageUrl = s3Upload.upload(file);
         getExhibition.updateTitleContentDate(exhibitionRequest.getTitle(), exhibitionRequest.getContent(),exhibitionRequest.getExhibitionDate());
-        getExhibition = setCustomMoods(exhibitionRequest.getCustomMoods(), getExhibition);
+        getExhibition.updateThumbnailUrl(exhibitionImageUrl);
         Exhibition savedExhibition = exhibitionRepository.save(getExhibition);
-        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate());
+        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate(), savedExhibition.getThumbnailUrl());
     }
     public Exhibition getExhibition(Long exhibitionId){
         Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibitionId)
@@ -86,13 +88,15 @@ public class ExhibitionService {
 
     public void delete(Long exhibitionId) throws Exception{
         Exhibition getExhibition = getExhibition(exhibitionId);
+//        imageHandler.deleteFile(getExhibition.getThumbnailUrl());
+//        s3Upload.fileDelete(getExhibition.getThumbnailUrl());
         exhibitionRepository.delete( getExhibition);
-        imageHandler.deleteFile(getExhibition.getThumbnailUrl());
     }
 
-    public void saveImage(MultipartFile files,Long exhibitionId) throws Exception {
+    public void saveImage(MultipartFile file,Long exhibitionId) throws Exception {
         Exhibition getExhibiton = getExhibition(exhibitionId);
-        String url = imageHandler.pareseFileInfo(files,getExhibiton.getUser().getUserId());
+//        String url = imageHandler.pareseFileInfo(files,getExhibiton.getUser().getUserId());
+        String url =  s3Upload.upload(file);
         getExhibiton.updateThumbnailUrl(url);
         exhibitionRepository.save(getExhibiton);
     }
@@ -110,5 +114,12 @@ public class ExhibitionService {
         return recentExhibitions.stream().map(ExhibitionResponse::new).collect(Collectors.toList());
 
     }
-
+    public void uploadLocalImage(ExhibitionRequest exhibitionRequest, MultipartFile file) throws Exception {
+        User getUser = userService.getUser(exhibitionRequest.getUserId());
+        invalidArguments(exhibitionRequest);
+        Exhibition exhibition = exhibitionRequest.toExhibitionEntity(exhibitionRequest,getUser);
+        String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
+        exhibition.updateThumbnailUrl(exhibitionImageUrl);
+        exhibitionRepository.save(exhibition);
+    }
 }

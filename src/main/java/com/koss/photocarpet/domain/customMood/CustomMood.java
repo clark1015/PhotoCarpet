@@ -18,10 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomMood extends BaseTimeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long customMoodId;
 
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String customMood;
 
 

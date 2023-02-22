@@ -18,13 +18,14 @@ import java.util.List;
 public class ExhibitionController {
     private final ExhibitionService exhibitionService;
     @PostMapping(value = "/create",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> create ( @RequestPart ExhibitionRequest exhibitionRequest,@RequestPart MultipartFile file) throws Exception{
+    public ResponseEntity<?> create (@Valid @RequestPart ExhibitionRequest exhibitionRequest, @RequestPart MultipartFile file) throws Exception{
+//        Long USERID = Long.parseLong(userId);
         exhibitionService.create(exhibitionRequest,file);
         return ResponseEntity.ok("ok");
     }
     @PutMapping("/update")
-    public ResponseEntity<?> update(final @RequestBody ExhibitionRequest exhibitionRequest) throws Exception{
-        ExhibitionResponse updateExhibition = exhibitionService.update(exhibitionRequest);
+    public ResponseEntity<?> update(final @RequestPart ExhibitionRequest exhibitionRequest, @RequestPart MultipartFile file) throws Exception{
+        ExhibitionResponse updateExhibition = exhibitionService.update(exhibitionRequest,file);
         return ResponseEntity.ok(updateExhibition);
     }
     @DeleteMapping("/{exhibitionId}")
@@ -33,8 +34,8 @@ public class ExhibitionController {
         return "delete : " + exhibitionId;
     }
     @PutMapping(value = "/image")
-    public ResponseEntity<?> saveImage(@RequestParam MultipartFile files,@RequestParam Long exhibitionId) throws Exception{
-        exhibitionService.saveImage(files, exhibitionId);
+    public ResponseEntity<?> saveImage(@RequestParam MultipartFile file, @RequestParam Long exhibitionId) throws Exception{
+        exhibitionService.saveImage(file, exhibitionId);
         return ResponseEntity.ok("ok");
     }
     @GetMapping("/morelike")
@@ -47,5 +48,17 @@ public class ExhibitionController {
         List<ExhibitionResponse> recentExhibitions = exhibitionService.recent();
         return ResponseEntity.ok(recentExhibitions);
     }
+    //local upload controller
+    @PostMapping(value = "/uploadImage",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> localImageUpload (@Valid @RequestPart ExhibitionRequest exhibitionRequest, @RequestPart MultipartFile file) throws Exception{
+        exhibitionService.create(exhibitionRequest,file);
+        return ResponseEntity.ok("ok");
+    }
+
+//    @PostMapping("/upload")
+//    public ResponseEntity<?> uploadFile(@RequestParam("images") MultipartFile multipartFile) throws IOException {
+//        s3Upload.upload(multipartFile);
+//        return ResponseEntity.ok("");
+//    }
 
 }
