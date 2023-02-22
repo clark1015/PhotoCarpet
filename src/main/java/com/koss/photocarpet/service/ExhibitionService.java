@@ -4,6 +4,7 @@ package com.koss.photocarpet.service;
 import com.koss.photocarpet.controller.ImageHandler;
 import com.koss.photocarpet.controller.dto.request.ExhibitionRequest;
 import com.koss.photocarpet.controller.dto.response.ExhibitionResponse;
+import com.koss.photocarpet.controller.dto.response.UserInExhibition;
 import com.koss.photocarpet.domain.customMood.CustomMood;
 import com.koss.photocarpet.domain.customMood.CustomMoodTestRepository;
 import com.koss.photocarpet.domain.exhibition.Exhibition;
@@ -78,7 +79,7 @@ public class ExhibitionService {
         getExhibition.updateTitleContentDate(exhibitionRequest.getTitle(), exhibitionRequest.getContent(),exhibitionRequest.getExhibitionDate());
         getExhibition.updateThumbnailUrl(exhibitionImageUrl);
         Exhibition savedExhibition = exhibitionRepository.save(getExhibition);
-        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getUserId(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate(), savedExhibition.getThumbnailUrl());
+        return ExhibitionResponse.of(savedExhibition.getExhibitionId(),savedExhibition.getTitle(),savedExhibition.getContent(),savedExhibition.getUser().getNickname(),savedExhibition.getUser().getProfileUrl(),savedExhibition.getLikeCount(),savedExhibition.getExhibitDate(), savedExhibition.getThumbnailUrl());
     }
     public Exhibition getExhibition(Long exhibitionId){
         Exhibition exhibition = exhibitionRepository.findByExhibitionId(exhibitionId)
@@ -121,5 +122,11 @@ public class ExhibitionService {
         String exhibitionImageUrl = imageHandler.pareseFileInfo(file,exhibition.getUser().getUserId());
         exhibition.updateThumbnailUrl(exhibitionImageUrl);
         exhibitionRepository.save(exhibition);
+    }
+
+    public ExhibitionResponse findByID(Long exhibitionId) {
+        Exhibition getExhibition = getExhibition(exhibitionId);
+        return ExhibitionResponse.of(getExhibition.getExhibitionId(),getExhibition.getTitle(), getExhibition.getContent(), getExhibition.getUser().getNickname(),getExhibition.getUser().getProfileUrl(), getExhibition.getLikeCount(),getExhibition.getExhibitDate(), getExhibition.getThumbnailUrl());
+
     }
 }
