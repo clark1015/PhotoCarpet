@@ -1,11 +1,22 @@
-
 version: '3'
 services:
   mysql:
-    image: mysql:8-oracle
-    container_name: db_container5 #바꿔도됨
+    image: mysql:8
+    container_name: mysql
     ports:
-      - "3309:3306" #앞부분 바꾸기
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: photocarpet #바꾸기
+      MYSQL_DATABASE: photocarpet
+
+  spring-boot:
+    build: .
+    container_name: spring_boot_container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/photocarpet
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root

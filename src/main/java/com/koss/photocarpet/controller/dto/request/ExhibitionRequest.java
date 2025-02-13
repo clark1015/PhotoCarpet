@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @ToString
 @Getter
@@ -22,6 +23,8 @@ public class ExhibitionRequest {
     @NotNull
     private Date exhibitionDate;
     private Long userId; //일단 userId는 직접받음
+
+    private List<String> customMoods;
 
 
     public Exhibition toExhibitionEntity(ExhibitionRequest exhibitionRequest, User user) {
